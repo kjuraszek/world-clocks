@@ -1,0 +1,106 @@
+.main-clock-container{
+    z-index:1;
+    width:300px;
+    height:300px;
+    margin: auto;
+    border:2px solid black;
+    border-radius: 100%;
+    position: relative;
+  }
+  .time-container{
+    text-align: center;
+    font-size: 24px;
+  }
+  .lines-container{
+    width:100%;
+    height:100%;
+    position: absolute;
+  }
+  .shield-container{
+    width:100%;
+    height:100%;
+    position: absolute;
+  }
+  .shield-line{
+    width:2%;
+    height:100%;
+    left: 49%;
+    background:black;
+    position: absolute;
+  }
+  .line-1-container{
+    transform:rotate(0deg);
+  }
+  .line-2-container{
+    transform:rotate(30deg);
+  }
+  .line-3-container{
+    transform:rotate(60deg);
+  }
+  .line-4-container{
+    transform:rotate(90deg);
+  }
+  .line-5-container{
+    transform:rotate(120deg);
+  }
+  .line-6-container{
+    transform:rotate(150deg);
+  }
+  .main-clock{
+    width:80%;
+    height:80%;
+    top: 10%;
+    left:10%;
+    background: #fff;
+    border-radius: 100%;
+    position: relative;
+    z-index:10;
+  }
+  .second-hand-container, .minute-hand-container, .hour-hand-container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index:20;
+  }
+  .second-hand{
+    width:2%;
+    height:50%;
+    margin-top:0;
+    margin-left: 49%;
+    display:block;
+    background:red;
+    border-radius: 50%;
+    z-index:30;
+  }
+  .minute-hand{
+    width:4%;
+    height:45%;
+    margin-top:5%;
+    margin-left: 48%;
+    display:block;
+    background:black;
+    border-radius: 50%;
+    z-index:40;
+  }
+  .hour-hand{
+    width:4%;
+    height:30%;
+    margin-top:20%;
+    margin-left: 48%;
+    display:block;
+    background:black;
+    border-radius: 50%;
+    z-index:50;
+  }
+  .shield-pin{
+    position: absolute;
+    z-index:20;
+    width:6%;
+    height:6%;
+    left: 47%;
+    top: 47%;
+    display:block;
+    background:blue;
+    border-radius: 50%;
+    z-index:60;
+  }
