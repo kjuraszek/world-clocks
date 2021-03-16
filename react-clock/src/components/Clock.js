@@ -6,13 +6,14 @@ class Clock extends React.Component{
     constructor(){
         super();
         let currentDate = new Date();
+        currentDate.setHours(currentDate.getUTCHours());
         this.state = {
             zone: 0,
             time: currentDate,
             interval: false,
             secondsDegree: currentDate.getSeconds() * 6,
             minutesDegree: currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
-            hoursDegree : currentDate.getUTCHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
+            hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
         }
         this.clockTick = this.clockTick.bind(this);
     }
@@ -31,7 +32,7 @@ class Clock extends React.Component{
             time: currentDate,
             secondsDegree: currentDate.getSeconds() * 6,
             minutesDegree: currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
-            hoursDegree : currentDate.getUTCHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
+            hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
         });
     }
     render(){
