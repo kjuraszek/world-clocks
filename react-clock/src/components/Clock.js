@@ -9,7 +9,7 @@ class Clock extends React.Component{
         currentDate.setHours(currentDate.getUTCHours());
         this.state = {
             zone: 0,
-            time: currentDate,
+            time: currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             interval: false,
             secondsDegree: currentDate.getSeconds() * 6,
             minutesDegree: currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
@@ -29,7 +29,7 @@ class Clock extends React.Component{
         let currentDate = new Date();
         currentDate.setHours(currentDate.getUTCHours() + this.state.zone);
         this.setState({
-            time: currentDate,
+            time: currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             secondsDegree: currentDate.getSeconds() * 6,
             minutesDegree: currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
             hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
@@ -74,15 +74,7 @@ class Clock extends React.Component{
                     </div>
                     <div class="time-container">
                         <p>
-                        {this.state.time.getHours() < 10 ? 
-                            `0${this.state.time.getHours()}`: 
-                            this.state.time.getHours()} : 
-                        {this.state.time.getMinutes() < 10 ? 
-                            `0${this.state.time.getMinutes()}`: 
-                            this.state.time.getMinutes()} : 
-                            {this.state.time.getSeconds() < 10 ? 
-                                `0${this.state.time.getSeconds()}`: 
-                                this.state.time.getSeconds()} (UTC+0)
+                        {this.state.time} (UTC+0)
                         </p>
                     </div>
                 </div>
