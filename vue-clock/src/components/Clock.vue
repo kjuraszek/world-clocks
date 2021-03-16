@@ -32,7 +32,7 @@
     </div>
     <div class="time-container">
         <p>
-          {{currentTime.hours}}<span>:</span>{{currentTime.minutes}}<span>:</span>{{currentTime.seconds}} (UTC +0)
+          {{currentTime}} (UTC +0)
         </p>
     </div>
   </div>
@@ -43,11 +43,12 @@ export default {
   name: 'Clock',
   data : function(){
     let currentDate = new Date();
+    currentDate.setHours(currentDate.getUTCHours());
         return {
             secondsDegree : currentDate.getSeconds() * 6,
             minutesDegree : currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
-            hoursDegree : currentDate.getUTCHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
-            time : currentDate,
+            hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
+            time : currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             interval : false,
             utcZone : 0
         }
@@ -79,11 +80,7 @@ export default {
         },
         currentTime: {
           get: function(){
-            return {
-              hours: this.time.getHours() < 10 ? `0${this.time.getHours().toString()}` : this.time.getHours().toString(),
-              minutes: this.time.getMinutes() < 10 ? `0${this.time.getMinutes().toString()}` : this.time.getMinutes().toString(),
-              seconds: this.time.getSeconds() < 10 ? `0${this.time.getSeconds().toString()}` : this.time.getSeconds().toString()
-            }
+            return this.time;
           },
           set: function(date){
             this.time = date;
@@ -120,7 +117,7 @@ export default {
 
               // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
               this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-              this.currentTime = date;
+              this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
             }.bind(this), 0.1);
         }
     },
