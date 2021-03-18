@@ -32,7 +32,7 @@
     </div>
     <div class="time-container">
         <p>
-          {{currentTime}} (UTC +0)
+          {{currentTime}} (UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}})
         </p>
     </div>
   </div>
@@ -43,14 +43,15 @@ export default {
   name: 'Clock',
   data : function(){
     let currentDate = new Date();
-    currentDate.setHours(currentDate.getUTCHours());
+    let currentZone = currentDate.getHours() - currentDate.getUTCHours();
+    currentDate.setHours(currentDate.getUTCHours() + currentZone);
         return {
             secondsDegree : currentDate.getSeconds() * 6,
             minutesDegree : currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
             hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
             time : currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             interval : false,
-            utcZone : 0
+            utcZone : currentZone
         }
     },
     computed:{
