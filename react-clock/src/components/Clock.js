@@ -6,9 +6,11 @@ class Clock extends React.Component{
     constructor(){
         super();
         let currentDate = new Date();
-        currentDate.setHours(currentDate.getUTCHours());
+        // generating random UTC zone - max value is 14, min is -12
+        let randomZone = Math.floor(Math.random() * (14 + 12 + 1)) - 12;
+        currentDate.setHours(currentDate.getUTCHours() + randomZone);
         this.state = {
-            zone: 0,
+            zone: randomZone,
             time: currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             interval: false,
             secondsDegree: currentDate.getSeconds() * 6,
@@ -74,7 +76,7 @@ class Clock extends React.Component{
                     </div>
                     <div class="time-container">
                         <p>
-                        {this.state.time} (UTC+0)
+                        {this.state.time} (UTC{this.state.zone >= 0 ? '+' + this.state.zone : this.state.zone})
                         </p>
                     </div>
                 </div>
