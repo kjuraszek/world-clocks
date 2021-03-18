@@ -15,12 +15,14 @@ export class ClockComponent implements OnInit {
 
   constructor() {
     let date = new Date();
-    date.setHours(date.getUTCHours());
-    this.secondsDegree = date.getSeconds();
-    this.minutesDegree = date.getMinutes();
-    this.hoursDegree = date.getHours();
+    // generating random UTC zone - max value is 14, min is -12
+    let randomZone = Math.floor(Math.random() * (14 + 12 + 1)) - 12;
+    date.setHours(date.getUTCHours() + randomZone);
+    this.secondsDegree = date.getSeconds() * 6;
+    this.minutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+    this.hoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
     this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-    this.zone = 0;
+    this.zone = randomZone;
     this.interval = null;
    }
 
