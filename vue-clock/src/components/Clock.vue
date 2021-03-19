@@ -1,40 +1,43 @@
 <template>
   <div>
-    <div class="main-clock-container">
-      <div class="lines-container">
-        <div class="shield-line line-1-container"></div>
-        <div class="shield-line line-2-container"></div>
-        <div class="shield-line line-3-container"></div>
-        <div class="shield-line line-4-container"></div>
-        <div class="shield-line line-5-container"></div>
-        <div class="shield-line line-6-container"></div>
-      </div>
-      <div class="shield-container">
-        <div class="main-clock">
-          <div 
-          class="second-hand-container" 
-          v-bind:style="{ transform: 'rotate(' + currentSecondsDegree + 'deg)' }">
-            <div class="second-hand"></div>
+    <div class="main-clock-parent">
+      <div class="main-clock-height-fix"></div>
+      <div class="main-clock-container">
+        <div class="lines-container">
+          <div class="shield-line line-1-container"></div>
+          <div class="shield-line line-2-container"></div>
+          <div class="shield-line line-3-container"></div>
+          <div class="shield-line line-4-container"></div>
+          <div class="shield-line line-5-container"></div>
+          <div class="shield-line line-6-container"></div>
+        </div>
+        <div class="shield-container">
+          <div class="main-clock">
+            <div 
+            class="second-hand-container" 
+            v-bind:style="{ transform: 'rotate(' + currentSecondsDegree + 'deg)' }">
+              <div class="second-hand"></div>
+            </div>
+            <div 
+            class="minute-hand-container"
+            v-bind:style="{ transform: 'rotate(' + currentMinutesDegree + 'deg)' }">
+              <div class="minute-hand"></div>
+            </div>
+            <div 
+            class="hour-hand-container"
+            v-bind:style="{ transform: 'rotate(' + currentHoursDegree + 'deg)' }">
+              <div class="hour-hand"></div>
+            </div>
+            <div class="shield-pin"></div>
           </div>
-          <div 
-          class="minute-hand-container"
-          v-bind:style="{ transform: 'rotate(' + currentMinutesDegree + 'deg)' }">
-            <div class="minute-hand"></div>
-          </div>
-          <div 
-          class="hour-hand-container"
-          v-bind:style="{ transform: 'rotate(' + currentHoursDegree + 'deg)' }">
-            <div class="hour-hand"></div>
-          </div>
-          <div class="shield-pin"></div>
         </div>
       </div>
     </div>
     <div class="time-container">
-        <p>
-          {{currentTime}} (UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}})
-        </p>
-    </div>
+          <p>
+            {{currentTime}} (UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}})
+          </p>
+      </div>
   </div>
 </template>
 
