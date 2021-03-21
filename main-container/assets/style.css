@@ -1,0 +1,43 @@
+body {
+	height: 100vh;
+	min-height: 100%;
+}
+#main-container{
+	height:100%;
+}
+.uk-card{
+	height:100%;
+}
+.main-clock-height-fix{
+	margin-top:100%;
+}
+.main-clock-parent{
+	display: inline-block;
+	position: relative;
+	width: 80%;
+}
+.main-clock-container{
+	width: auto!important;
+	height: auto!important;
+	position: absolute!important;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #fff;
+}
+.second-hand-container{
+	transition:0.3s ease-in all;
+}
+.second-hand-container[style="transform: rotate(0deg);"]{
+	transition:none;
+}
+.time-container {
+    font-family: "Orbitron", sans-serif;
+}
+.uk-logo, h1, h2, h3{
+	font-family:"Mitr", sans-serif;
+}
+#sidenav .uk-offcanvas-bar .uk-logo span.uk-icon{
+	display:inline;
+}
