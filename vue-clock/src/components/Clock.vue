@@ -1,5 +1,13 @@
 <template>
   <div>
+
+    <div class="city-container uk-container uk-margin-auto uk-padding-small">
+      <h3
+      :class="currentAnimation === true ? 'uk-margin-none uk-text-center uk-animation-slide-top' : 'uk-margin-none uk-text-center'">
+        {{currentCity}}
+      </h3>
+    </div>
+    
     <div class="main-clock-parent">
       <div class="main-clock-height-fix"></div>
       <div class="main-clock-container">
@@ -33,15 +41,73 @@
         </div>
       </div>
     </div>
-    <div class="time-container">
-          <p>
-            {{currentTime}} (UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}})
-          </p>
+
+    <div class="time-container uk-container uk-margin-auto uk-padding-small">
+      <p class="uk-margin-none uk-text-large uk-text-center">
+        {{currentTime}}
+      </p>
+    </div>
+
+    <div class="zone-container uk-container uk-margin-auto uk-padding-small" style="width:300px">
+      <div class="uk-flex uk-flex-center uk-flex-middle uk-text-center">
+          <div class="uk-flex-none">
+            <vk-button 
+            class="uk-padding-small"
+            @click="decrementZone" 
+            :disabled="utcZone < -11">
+              <vk-icon icon="chevron-left" ratio="1.5"></vk-icon>
+            </vk-button>
+          </div>
+          <div 
+          :class="currentAnimation === true ? 'uk-flex-1 uk-animation-slide-bottom' : 'uk-flex-1'">
+            <p class="uk-margin-none uk-text-large">
+              UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}}
+            </p>
+          </div>
+          <div class="uk-flex-none">
+            <vk-button 
+            class="uk-padding-small"
+            @click="incrementZone" 
+            :disabled="utcZone > 13">
+              <vk-icon icon="chevron-right" ratio="1.5"></vk-icon>
+            </vk-button>
+          </div>
       </div>
+    </div>
   </div>
 </template>
 
 <script>
+//temporary solution
+const CITIES = {
+      '-12':'Baker Island',
+      '-11':'Niue',
+      '-10':'Honolulu',
+      '-9':'Anchorage',
+      '-8':'Los Angeles',
+      '-7':'Denver',
+      '-6':'Mexico City',
+      '-5':'New York',
+      '-4':'Santiago',
+      '-3':'São Paulo',
+      '-2':'Fernando de Noronha',
+      '-1':'Ittoqqortoormiit',
+      '0':'London',
+      '1':'Warsaw',
+      '2':'Cairo',
+      '3':'Moscow',
+      '4':'Dubai',
+      '5':'Karachi',
+      '6':'Dhaka',
+      '7':'Jakarta',
+      '8':'Shanghai',
+      '9':'Tokyo',
+      '10':'Sydney',
+      '11':'Nouméa',
+      '12':'Auckland',
+      '13':'Samoa',
+      '14':'Line Islands'
+      };
 export default {
   name: 'Clock',
   data : function(){
@@ -54,7 +120,9 @@ export default {
             hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
             time : currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
             interval : false,
-            utcZone : currentZone
+            utcZone : currentZone,
+            animate: false,
+            city: CITIES[currentZone.toString()]
         }
     },
     computed:{
@@ -97,33 +165,67 @@ export default {
           set: function(zone){
             this.utcZone = zone;
           },
+        },
+        currentAnimation: {
+          get: function(){
+            return this.animate;
+          },
+          set: function(anim){
+            this.animate = anim;
+          },
+        },
+        currentCity: {
+          get: function(){
+            return this.city;
+          },
+          set: function(value){
+            this.city = value;
+          },
         }
     },
     mounted : function(){
-        this.tick();     
+      this.currentAnimation = true;
+      this.tick();
+      this.currentAnimation = false;     
     },
     beforeDestroy() {
        clearInterval(this.interval);
     },
     methods : {
         tick : function(){          
-            this.interval = setInterval(function(){
-              let date = new Date();
+          this.interval = setInterval(function(){
+            let date = new Date();
 
-              // set UTC hours first
-              date.setHours(date.getUTCHours() + this.utcZone);
+            // set UTC hours first
+            date.setHours(date.getUTCHours() + this.utcZone);
 
-              // 360deg by 60s gives 6 degrees per second
-              this.currentSecondsDegree = date.getSeconds() * 6;
+            // 360deg by 60s gives 6 degrees per second
+            this.currentSecondsDegree = date.getSeconds() * 6;
 
-              // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
-              this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+            // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
+            this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
 
-              // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
-              this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-              this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-            }.bind(this), 0.1);
+            // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
+            this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
+            this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+          }.bind(this), 0.1);
+      },
+      incrementZone : function(){
+        if(this.utcZone < 14){
+          this.currentAnimation = true;
+          this.utcZone += 1;
+          this.currentCity = CITIES[this.currentZone.toString()];
+          setTimeout(() => this.currentAnimation = false, 500);
         }
+      },
+      decrementZone : function(){
+        if(this.utcZone > -12){
+          this.currentAnimation = true;
+          this.utcZone -= 1;
+          this.currentCity = CITIES[this.currentZone.toString()];
+          setTimeout(() => this.currentAnimation = false, 500);
+        }
+      }
     },
 }
 </script>
@@ -138,9 +240,12 @@ export default {
   border-radius: 100%;
   position: relative;
 }
-.time-container{
-  text-align: center;
-  font-size: 24px;
+.city-container, .zone-container, .time-container{
+  width:300px;
+}
+.city-container h3{
+  font-size: 48px;
+  font-weight: 700;
 }
 .lines-container{
   width:100%;
