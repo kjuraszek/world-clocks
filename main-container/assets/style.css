@@ -16,6 +16,12 @@ body {
 	position: relative;
 	width: 80%;
 }
+.city-container, .zone-container, .time-container{
+	width:100%!important;
+}
+.city-container{
+	word-wrap: break-word;
+}
 .main-clock-container{
 	width: auto!important;
 	height: auto!important;
