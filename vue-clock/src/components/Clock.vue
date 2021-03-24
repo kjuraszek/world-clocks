@@ -118,7 +118,7 @@ export default {
   name: 'Clock',
   data : function(){
     let currentDate = new Date();
-    let currentZone = currentDate.getHours() - currentDate.getUTCHours();
+    let currentZone = ( currentDate.getHours() === 0 ? 24 : currentDate.getHours() ) - currentDate.getUTCHours();
     currentDate.setHours(currentDate.getUTCHours() + currentZone);
         return {
             secondsDegree : currentDate.getSeconds() * 6,
@@ -190,9 +190,7 @@ export default {
         }
     },
     mounted : function(){
-      this.currentAnimation = true;
-      this.tick();
-      this.currentAnimation = false;     
+      this.tick();    
     },
     beforeDestroy() {
        clearInterval(this.interval);
