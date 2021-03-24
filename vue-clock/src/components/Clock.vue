@@ -250,7 +250,7 @@ export default {
   width:300px;
 }
 .city-container h3{
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 700;
 }
 .lines-container{
