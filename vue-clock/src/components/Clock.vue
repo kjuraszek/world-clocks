@@ -3,7 +3,10 @@
 
     <div class="city-container uk-container uk-margin-auto uk-padding-small">
       <h3
-      :class="currentAnimation === true ? 'uk-margin-none uk-text-center uk-animation-slide-top' : 'uk-margin-none uk-text-center'">
+      :class="[
+      'uk-margin-none', 
+      'uk-text-center',
+      currentAnimation ? 'uk-animation-slide-top' : '']">
         {{currentCity}}
       </h3>
     </div>
@@ -48,7 +51,7 @@
       </p>
     </div>
 
-    <div class="zone-container uk-container uk-margin-auto uk-padding-small" style="width:300px">
+    <div class="zone-container uk-container uk-margin-auto uk-padding-small">
       <div class="uk-flex uk-flex-center uk-flex-middle uk-text-center">
           <div class="uk-flex-none">
             <vk-button 
@@ -59,7 +62,10 @@
             </vk-button>
           </div>
           <div 
-          :class="currentAnimation === true ? 'uk-flex-1 uk-animation-slide-bottom' : 'uk-flex-1'">
+          :class="[
+            'uk-flex-1',
+            currentAnimation === true ? 'uk-animation-slide-bottom' : ''
+          ]">
             <p class="uk-margin-none uk-text-large">
               UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}}
             </p>
