@@ -1,5 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 
+//temporary solution
+const CITIES: any = {
+  '-12':'Baker Island',
+  '-11':'Niue',
+  '-10':'Honolulu',
+  '-9':'Anchorage',
+  '-8':'Los Angeles',
+  '-7':'Denver',
+  '-6':'Mexico City',
+  '-5':'New York',
+  '-4':'Santiago',
+  '-3':'São Paulo',
+  '-2':'Fernando de Noronha',
+  '-1':'Ittoqqortoormiit',
+  '0':'London',
+  '1':'Warsaw',
+  '2':'Cairo',
+  '3':'Moscow',
+  '4':'Dubai',
+  '5':'Karachi',
+  '6':'Dhaka',
+  '7':'Jakarta',
+  '8':'Shanghai',
+  '9':'Tokyo',
+  '10':'Sydney',
+  '11':'Nouméa',
+  '12':'Auckland',
+  '13':'Samoa',
+  '14':'Line Islands'
+};
+
 @Component({
   selector: 'app-clock',
   templateUrl: './clock.component.html',
@@ -12,6 +43,8 @@ export class ClockComponent implements OnInit {
   currentTime:string;
   zone:number; 
   interval:null | ReturnType<typeof setInterval> = null;
+  city:string;
+  animate:boolean;
 
   constructor() {
     let date = new Date();
@@ -24,6 +57,8 @@ export class ClockComponent implements OnInit {
     this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
     this.zone = randomZone;
     this.interval = null;
+    this.city = CITIES[randomZone.toString()];
+    this.animate = false;
    }
 
   ngOnInit(): void {
@@ -41,6 +76,28 @@ export class ClockComponent implements OnInit {
     if(this.interval){
       window.clearInterval(this.interval);
       this.interval = null;
+    }
+  }
+
+  decrementZone(): void {
+    if(this.zone > -12){
+      this.zone -= 1;
+      this.city = CITIES[(this.zone).toString()];
+      this.animate = true;
+      setTimeout(() => {
+        this.animate = false;
+      }, 500);
+    }
+  }
+
+  incrementZone(): void {
+    if(this.zone < 14){
+      this.zone += 1;
+      this.city = CITIES[(this.zone).toString()];
+      this.animate = true;
+      setTimeout(() => {
+        this.animate = false;
+      }, 500);
     }
   }
 }

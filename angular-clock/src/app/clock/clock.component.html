@@ -1,4 +1,14 @@
 <div>
+    <div class="city-container uk-container uk-margin-auto uk-padding-small">
+        <h3 
+        [ngClass]="[
+                'uk-margin-none',
+                'uk-text-center',
+                animate ? 'uk-animation-slide-top' : ''
+                ]">
+            {{city}}
+        </h3>
+    </div>
     <div class="main-clock-parent">
         <div class="main-clock-height-fix"></div>
         <div class="main-clock-container">
@@ -35,9 +45,40 @@
             </div>
         </div>
     </div>
-    <div class="time-container">
-        <p>
-        {{currentTime}} (UTC{{zone >= 0 ? '+' + zone : zone}})
+    <div class="time-container uk-container uk-margin-auto uk-padding-small">
+        <p class="uk-margin-none uk-text-large uk-text-center">
+            {{currentTime}}
         </p>
+    </div>
+
+    <div class="zone-container uk-container uk-margin-auto uk-padding-small">
+        <div class="uk-flex uk-flex-center uk-flex-middle uk-text-center">
+            <div class="uk-flex-none">
+                <button 
+                class="uk-padding-small uk-button uk-button-default"
+                [attr.disabled]="zone < -11 ? 'disabled' : null"
+                (click)="decrementZone()">
+                    <span uk-icon="icon: chevron-left" ratio="1.5"></span>
+                </button>
+            </div>
+            <div 
+            class="uk-flex-1">
+                <p [ngClass]="[
+                'uk-margin-none',
+                'uk-text-large',
+                animate ? 'uk-animation-slide-bottom' : ''
+                ]">
+                    UTC{{zone >= 0 ? '+' + zone : zone}}
+                </p>
+            </div>
+            <div class="uk-flex-none">
+                <button 
+                    class="uk-padding-small uk-button uk-button-default"
+                    [attr.disabled]="zone > 13 ? 'disabled' : null"
+                    (click)="incrementZone()">
+                        <span uk-icon="icon: chevron-right" ratio="1.5"></span>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
