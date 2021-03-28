@@ -1,135 +1,124 @@
 <template>
   <div>
-
-    <div class="city-container uk-container uk-margin-auto uk-padding-small">
-      <h3
-      :class="[
-      'uk-margin-none', 
-      'uk-text-center',
-      currentAnimation ? 'uk-animation-slide-top' : '']">
-        {{currentCity}}
-      </h3>
-    </div>
-    
-    <div class="main-clock-parent">
-      <div class="main-clock-height-fix"></div>
-      <div class="main-clock-container">
-        <div class="lines-container">
-          <div class="shield-line line-1-container"></div>
-          <div class="shield-line line-2-container"></div>
-          <div class="shield-line line-3-container"></div>
-          <div class="shield-line line-4-container"></div>
-          <div class="shield-line line-5-container"></div>
-          <div class="shield-line line-6-container"></div>
-        </div>
-        <div class="shield-container">
-          <div class="main-clock">
-            <div 
-            class="second-hand-container" 
-            v-bind:style="{ transform: 'rotate(' + currentSecondsDegree + 'deg)' }">
-              <div class="second-hand"></div>
-            </div>
-            <div 
-            class="minute-hand-container"
-            v-bind:style="{ transform: 'rotate(' + currentMinutesDegree + 'deg)' }">
-              <div class="minute-hand"></div>
-            </div>
-            <div 
-            class="hour-hand-container"
-            v-bind:style="{ transform: 'rotate(' + currentHoursDegree + 'deg)' }">
-              <div class="hour-hand"></div>
-            </div>
-            <div class="shield-pin"></div>
-          </div>
-        </div>
+    <div v-if="loading">
+      <div class="uk-container uk-text-center loader-container">
+        <h3>Retrieving data...</h3>
+        <vk-spinner ratio="4"></vk-spinner>
       </div>
     </div>
 
-    <div class="time-container uk-container uk-margin-auto uk-padding-small">
-      <p class="uk-margin-none uk-text-large uk-text-center">
-        {{currentTime}}
-      </p>
-    </div>
+    <div v-else>
 
-    <div class="zone-container uk-container uk-margin-auto uk-padding-small">
-      <div class="uk-flex uk-flex-center uk-flex-middle uk-text-center">
-          <div class="uk-flex-none">
-            <vk-button 
-            class="uk-padding-small"
-            @click="decrementZone" 
-            :disabled="utcZone < -11">
-              <vk-icon icon="chevron-left" ratio="1.5"></vk-icon>
-            </vk-button>
-          </div>
-          <div 
+      <div v-if="Object.keys(zones).length === 0"> 
+        <div class="uk-container uk-text-center uk-text-danger error-container">
+          <h3>Unable to retrieve data - try to refresh the page.</h3>
+          <vk-icon icon="warning" ratio="4"></vk-icon>
+        </div>
+      </div>
+
+      <div v-else class="uk-animation-slide-bottom">
+        <div class="city-container uk-container uk-margin-auto uk-padding-small">
+          <h3
           :class="[
-            'uk-flex-1',
-            currentAnimation === true ? 'uk-animation-slide-bottom' : ''
-          ]">
-            <p class="uk-margin-none uk-text-large">
-              UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}}
-            </p>
+          'uk-margin-none', 
+          'uk-text-center',
+          currentAnimation ? 'uk-animation-slide-top' : '']">
+            {{currentCity}}
+          </h3>
+        </div>
+        
+        <div class="main-clock-parent">
+          <div class="main-clock-height-fix"></div>
+          <div class="main-clock-container">
+            <div class="lines-container">
+              <div class="shield-line line-1-container"></div>
+              <div class="shield-line line-2-container"></div>
+              <div class="shield-line line-3-container"></div>
+              <div class="shield-line line-4-container"></div>
+              <div class="shield-line line-5-container"></div>
+              <div class="shield-line line-6-container"></div>
+            </div>
+            <div class="shield-container">
+              <div class="main-clock">
+                <div 
+                class="second-hand-container" 
+                v-bind:style="{ transform: 'rotate(' + currentSecondsDegree + 'deg)' }">
+                  <div class="second-hand"></div>
+                </div>
+                <div 
+                class="minute-hand-container"
+                v-bind:style="{ transform: 'rotate(' + currentMinutesDegree + 'deg)' }">
+                  <div class="minute-hand"></div>
+                </div>
+                <div 
+                class="hour-hand-container"
+                v-bind:style="{ transform: 'rotate(' + currentHoursDegree + 'deg)' }">
+                  <div class="hour-hand"></div>
+                </div>
+                <div class="shield-pin"></div>
+              </div>
+            </div>
           </div>
-          <div class="uk-flex-none">
-            <vk-button 
-            class="uk-padding-small"
-            @click="incrementZone" 
-            :disabled="utcZone > 13">
-              <vk-icon icon="chevron-right" ratio="1.5"></vk-icon>
-            </vk-button>
+        </div>
+
+        <div class="time-container uk-container uk-margin-auto uk-padding-small">
+          <p class="uk-margin-none uk-text-large uk-text-center">
+            {{currentTime}}
+          </p>
+        </div>
+
+        <div class="zone-container uk-container uk-margin-auto uk-padding-small">
+          <div class="uk-flex uk-flex-center uk-flex-middle uk-text-center">
+              <div class="uk-flex-none">
+                <vk-button 
+                class="uk-padding-small"
+                @click="decrementZone" 
+                :disabled="utcZone < -11">
+                  <vk-icon icon="chevron-left" ratio="1.5"></vk-icon>
+                </vk-button>
+              </div>
+              <div 
+              :class="[
+                'uk-flex-1',
+                currentAnimation === true ? 'uk-animation-slide-bottom' : ''
+              ]">
+                <p class="uk-margin-none uk-text-large">
+                  UTC{{utcZone >= 0 ? '+' + utcZone : utcZone}}
+                </p>
+              </div>
+              <div class="uk-flex-none">
+                <vk-button 
+                class="uk-padding-small"
+                @click="incrementZone" 
+                :disabled="utcZone > 13">
+                  <vk-icon icon="chevron-right" ratio="1.5"></vk-icon>
+                </vk-button>
+              </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-//temporary solution
-const CITIES = {
-      '-12':'Baker Island',
-      '-11':'Niue',
-      '-10':'Honolulu',
-      '-9':'Anchorage',
-      '-8':'Los Angeles',
-      '-7':'Denver',
-      '-6':'Mexico City',
-      '-5':'New York',
-      '-4':'Santiago',
-      '-3':'São Paulo',
-      '-2':'Fernando de Noronha',
-      '-1':'Ittoqqortoormiit',
-      '0':'London',
-      '1':'Warsaw',
-      '2':'Cairo',
-      '3':'Moscow',
-      '4':'Dubai',
-      '5':'Karachi',
-      '6':'Dhaka',
-      '7':'Jakarta',
-      '8':'Shanghai',
-      '9':'Tokyo',
-      '10':'Sydney',
-      '11':'Nouméa',
-      '12':'Auckland',
-      '13':'Samoa',
-      '14':'Line Islands'
-      };
+import axios from 'axios';
+
 export default {
   name: 'Clock',
-  data : function(){
-    let currentDate = new Date();
-    let currentZone = ( currentDate.getHours() === 0 ? 24 : currentDate.getHours() ) - currentDate.getUTCHours();
-    currentDate.setHours(currentDate.getUTCHours() + currentZone);
-        return {
-            secondsDegree : currentDate.getSeconds() * 6,
-            minutesDegree : currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60,
-            hoursDegree : currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
-            time : currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'}),
-            interval : false,
-            utcZone : currentZone,
-            animate: false,
-            city: CITIES[currentZone.toString()]
-        }
+  data: function(){
+    return {
+        loading: true,
+        zones: {},
+        secondsDegree : 0,
+        minutesDegree : 0,
+        hoursDegree : 0,
+        time : "00:00:00",
+        interval : false,
+        utcZone : 0,
+        animate: false,
+        city: "unknown"
+    }
     },
     computed:{
         currentSecondsDegree : {
@@ -190,6 +179,7 @@ export default {
         }
     },
     mounted : function(){
+      this.getZonesData();
       this.tick();    
     },
     beforeDestroy() {
@@ -198,27 +188,30 @@ export default {
     methods : {
         tick : function(){          
           this.interval = setInterval(function(){
-            let date = new Date();
+            if(this.loading === false && Object.keys(this.zones).length > 0){
 
-            // set UTC hours first
-            date.setHours(date.getUTCHours() + this.utcZone);
+              let date = new Date();
 
-            // 360deg by 60s gives 6 degrees per second
-            this.currentSecondsDegree = date.getSeconds() * 6;
+              // set UTC hours first
+              date.setHours(date.getUTCHours() + this.utcZone);
 
-            // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
-            this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+              // 360deg by 60s gives 6 degrees per second
+              this.currentSecondsDegree = date.getSeconds() * 6;
 
-            // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
-            this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-            this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+              // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
+              this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+
+              // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
+              this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
+              this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+            }
           }.bind(this), 0.1);
       },
       incrementZone : function(){
         if(this.utcZone < 14){
           this.currentAnimation = true;
           this.utcZone += 1;
-          this.currentCity = CITIES[this.currentZone.toString()];
+          this.currentCity = this.zones[this.currentZone.toString()];
           setTimeout(() => this.currentAnimation = false, 500);
         }
       },
@@ -226,9 +219,38 @@ export default {
         if(this.utcZone > -12){
           this.currentAnimation = true;
           this.utcZone -= 1;
-          this.currentCity = CITIES[this.currentZone.toString()];
+          this.currentCity = this.zones[this.currentZone.toString()];
           setTimeout(() => this.currentAnimation = false, 500);
         }
+      },
+      setClockTime() {
+        let currentDate = new Date();
+        let currentZone = ( currentDate.getHours() === 0 ? 24 : currentDate.getHours() ) - currentDate.getUTCHours();
+        currentDate.setHours(currentDate.getUTCHours() + currentZone);
+
+        this.secondsDegree = currentDate.getSeconds() * 6;
+        this.minutesDegree = currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60;
+        this.hoursDegree = currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
+        this.time = currentDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        this.interval = false;
+        this.utcZone = currentZone;
+        this.animate = false;
+        this.city = this.zones[currentZone.toString()];
+        this.loading = false;
+      },
+      getZonesData() {
+          this.loading = true;
+          
+          axios.get(process.env.BASE_URL + "data/zones.json")
+          .then((response) => {
+            this.zones = {...response.data.zones};
+            this.setClockTime();
+          })
+          .catch(error => {
+            this.zones = {};
+            this.loading = false;
+            console.log(error);
+          });
       }
     },
 }
@@ -244,7 +266,7 @@ export default {
   border-radius: 100%;
   position: relative;
 }
-.city-container, .zone-container, .time-container{
+.city-container, .zone-container, .time-container, .loader-container, .error-container{
   width:300px;
 }
 .city-container h3{

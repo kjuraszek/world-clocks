@@ -1,0 +1,31 @@
+{
+	"zones":{
+        "-12":"Baker Island",
+      "-11":"Niue",
+      "-10":"Honolulu",
+      "-9":"Anchorage",
+      "-8":"Los Angeles",
+      "-7":"Denver",
+      "-6":"Mexico City",
+      "-5":"New York",
+      "-4":"Santiago",
+      "-3":"São Paulo",
+      "-2":"Fernando de Noronha",
+      "-1":"Ittoqqortoormiit",
+      "0":"London",
+      "1":"Warsaw",
+      "2":"Cairo",
+      "3":"Moscow",
+      "4":"Dubai",
+      "5":"Karachi",
+      "6":"Dhaka",
+      "7":"Jakarta",
+      "8":"Shanghai",
+      "9":"Tokyo",
+      "10":"Sydney",
+      "11":"Nouméa",
+      "12":"Auckland",
+      "13":"Samoa",
+      "14":"Line Islands"
+    }
+}
