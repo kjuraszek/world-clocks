@@ -190,10 +190,12 @@ export default {
           this.interval = setInterval(function(){
             if(this.loading === false && Object.keys(this.zones).length > 0){
 
-              let date = new Date();
-
-              // set UTC hours first
-              date.setHours(date.getUTCHours() + this.utcZone);
+              // get current date in selected zone
+              let date = new Date(
+                new Date().toLocaleString('en-US', {
+                  timeZone: this.zones[this.utcZone]['tz']
+                })
+              );
 
               // 360deg by 60s gives 6 degrees per second
               this.currentSecondsDegree = date.getSeconds() * 6;
@@ -208,26 +210,25 @@ export default {
           }.bind(this), 0.1);
       },
       incrementZone : function(){
-        if(this.utcZone < 14){
+        if(this.currentZone < 14){
           this.currentAnimation = true;
-          this.utcZone += 1;
-          this.currentCity = this.zones[this.currentZone.toString()];
+          this.currentZone += 1;
+          this.currentCity = this.zones[this.currentZone.toString()]["city"];
           setTimeout(() => this.currentAnimation = false, 500);
         }
       },
       decrementZone : function(){
-        if(this.utcZone > -12){
+        if(this.currentZone > -12){
           this.currentAnimation = true;
-          this.utcZone -= 1;
-          this.currentCity = this.zones[this.currentZone.toString()];
+          this.currentZone -= 1;
+          this.currentCity = this.zones[this.currentZone.toString()]["city"];
           setTimeout(() => this.currentAnimation = false, 500);
         }
       },
       setClockTime() {
         let currentDate = new Date();
-        let currentZone = ( currentDate.getHours() === 0 ? 24 : currentDate.getHours() ) - currentDate.getUTCHours();
-        currentDate.setHours(currentDate.getUTCHours() + currentZone);
-
+        let currentZone = this.setClockZone();
+        
         this.secondsDegree = currentDate.getSeconds() * 6;
         this.minutesDegree = currentDate.getMinutes() * 6 + currentDate.getSeconds() * 6 / 60;
         this.hoursDegree = currentDate.getHours() % 12 * 30 + currentDate.getMinutes() * 6 / 12,
@@ -235,8 +236,28 @@ export default {
         this.interval = false;
         this.utcZone = currentZone;
         this.animate = false;
-        this.city = this.zones[currentZone.toString()];
+        this.city = this.zones[currentZone.toString()]["city"];
         this.loading = false;
+      },
+      setClockZone(){
+
+        // compare offsets of two dates (summer and winter)
+        let today = new Date();
+        let offset_1 = new Date(today.getFullYear(), 0, 1).getTimezoneOffset();
+        let offset_2 = new Date(today.getFullYear(), 6, 1).getTimezoneOffset();
+        let zone = 0;
+        
+        if(offset_1 > offset_2){
+        // daylight saving time in summer
+          zone = offset_1 / -60;
+        } else if(offset_2 > offset_1){
+        // daylight saving time in winter
+          zone = offset_2 / -60;
+        } else {
+        // no daylight saving time
+          zone = offset_1 / -60;
+        }
+        return zone;
       },
       getZonesData() {
           this.loading = true;
@@ -244,7 +265,7 @@ export default {
           axios.get(process.env.BASE_URL + "data/zones.json")
           .then((response) => {
             this.zones = {...response.data.zones};
-            this.setClockTime();
+            setTimeout(() => this.setClockTime(), 2000);
           })
           .catch(error => {
             this.zones = {};
