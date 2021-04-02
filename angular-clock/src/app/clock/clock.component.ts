@@ -1,35 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-//temporary solution
-const CITIES: any = {
-  '-12':'Baker Island',
-  '-11':'Niue',
-  '-10':'Honolulu',
-  '-9':'Anchorage',
-  '-8':'Los Angeles',
-  '-7':'Denver',
-  '-6':'Mexico City',
-  '-5':'New York',
-  '-4':'Santiago',
-  '-3':'São Paulo',
-  '-2':'Fernando de Noronha',
-  '-1':'Ittoqqortoormiit',
-  '0':'London',
-  '1':'Warsaw',
-  '2':'Cairo',
-  '3':'Moscow',
-  '4':'Dubai',
-  '5':'Karachi',
-  '6':'Dhaka',
-  '7':'Jakarta',
-  '8':'Shanghai',
-  '9':'Tokyo',
-  '10':'Sydney',
-  '11':'Nouméa',
-  '12':'Auckland',
-  '13':'Samoa',
-  '14':'Line Islands'
-};
+import axios from 'axios';
 
 @Component({
   selector: 'app-clock',
@@ -45,31 +15,61 @@ export class ClockComponent implements OnInit {
   interval:null | ReturnType<typeof setInterval> = null;
   city:string;
   animate:boolean;
+  loading:boolean;
+  zones:any;
 
-  constructor() {
-    let date = new Date();
-    // generating random UTC zone - max value is 14, min is -12
-    let randomZone = Math.floor(Math.random() * (14 + 12 + 1)) - 12;
-    date.setHours(date.getUTCHours() + randomZone);
-    this.secondsDegree = date.getSeconds() * 6;
-    this.minutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
-    this.hoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-    this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-    this.zone = randomZone;
+  constructor() {  
+    this.secondsDegree = 0;
+    this.minutesDegree = 0;
+    this.hoursDegree = 0;
+    this.currentTime = "00:00:00";
+    this.zone = 0;
     this.interval = null;
-    this.city = CITIES[randomZone.toString()];
+    this.city = "unknown";
     this.animate = false;
+    this.loading = false;
+    this.zones = {};
    }
 
   ngOnInit(): void {
-    this.interval = setInterval( ()=>{
-        let date = new Date();
-        date.setHours(date.getUTCHours() + this.zone);
-        this.secondsDegree = date.getSeconds() * 6;
-        this.minutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
-        this.hoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-        this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-      }, 100);
+    this.loading = true;
+    axios.get("./data/zones.json")
+    .then((response) => {
+      this.zones = {...response.data.zones};
+      //timeout to simulate fetching
+      setTimeout(() => {
+        if(Object.keys(this.zones).length > 0){
+          // generating random UTC zone - max value is 14, min is -12
+          let randomZone = Math.floor(Math.random() * (14 + 12 + 1)) - 12;
+          
+          this.zone = randomZone;
+          this.city = this.zones[(randomZone).toString()]["city"];
+          this.loading = false;
+          this.interval = setInterval( () => {
+            let date = new Date(
+              new Date().toLocaleString('en-US', {
+                timeZone: this.zones[this.zone]['tz']
+              })
+            );
+            
+            this.secondsDegree = date.getSeconds() * 6;
+            this.minutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+            this.hoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
+            this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+          }, 100);
+        } else {
+          this.loading = false;
+        }
+      }, 900);
+    
+    })
+    .catch(error => {
+      this.interval = null;
+      this.zones = {};
+      this.loading = false;
+      console.log(error);
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -82,7 +82,7 @@ export class ClockComponent implements OnInit {
   decrementZone(): void {
     if(this.zone > -12){
       this.zone -= 1;
-      this.city = CITIES[(this.zone).toString()];
+      this.city = this.zones[(this.zone).toString()]["city"];
       this.animate = true;
       setTimeout(() => {
         this.animate = false;
@@ -93,11 +93,19 @@ export class ClockComponent implements OnInit {
   incrementZone(): void {
     if(this.zone < 14){
       this.zone += 1;
-      this.city = CITIES[(this.zone).toString()];
+      this.city = this.zones[(this.zone).toString()]["city"];
       this.animate = true;
       setTimeout(() => {
         this.animate = false;
       }, 500);
+    }
+  }
+
+  emptyZonesObject(): boolean {
+    if(Object.keys(this.zones).length === 0){
+      return true;
+    } else {
+      return false;
     }
   }
 }
