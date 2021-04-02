@@ -106,7 +106,7 @@ import axios from 'axios';
 
 export default {
   name: 'Clock',
-  data: function(){
+  data(){
     return {
         loading: true,
         zones: {},
@@ -178,38 +178,36 @@ export default {
           },
         }
     },
-    mounted : function(){
+    mounted(){
       this.getZonesData();
-      this.tick();    
     },
     beforeDestroy() {
        clearInterval(this.interval);
     },
     methods : {
-        tick : function(){          
+        tick(){          
           this.interval = setInterval(function(){
-            if(this.loading === false && Object.keys(this.zones).length > 0){
 
-              // get current date in selected zone
-              let date = new Date(
-                new Date().toLocaleString('en-US', {
-                  timeZone: this.zones[this.utcZone]['tz']
-                })
-              );
+            // get current date in selected zone
+            let date = new Date(
+              new Date().toLocaleString('en-US', {
+                timeZone: this.zones[this.utcZone]['tz']
+              })
+            );
 
-              // 360deg by 60s gives 6 degrees per second
-              this.currentSecondsDegree = date.getSeconds() * 6;
+            // 360deg by 60s gives 6 degrees per second
+            this.currentSecondsDegree = date.getSeconds() * 6;
 
-              // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
-              this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
+            // 360deg by 60m gives 6 degrees per minute PLUS seconds proportionally
+            this.currentMinutesDegree = date.getMinutes() * 6 + date.getSeconds() * 6 / 60;
 
-              // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
-              this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
-              this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-            }
+            // 360deg by 12h gives 30 degrees per hour PLUS minutes proportionally
+            this.currentHoursDegree = date.getHours() % 12 * 30 + date.getMinutes() * 6 / 12;
+            this.currentTime = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+            
           }.bind(this), 0.1);
       },
-      incrementZone : function(){
+      incrementZone(){
         if(this.currentZone < 14){
           this.currentAnimation = true;
           this.currentZone += 1;
@@ -217,7 +215,7 @@ export default {
           setTimeout(() => this.currentAnimation = false, 500);
         }
       },
-      decrementZone : function(){
+      decrementZone(){
         if(this.currentZone > -12){
           this.currentAnimation = true;
           this.currentZone -= 1;
@@ -238,6 +236,7 @@ export default {
         this.animate = false;
         this.city = this.zones[currentZone.toString()]["city"];
         this.loading = false;
+        this.tick();
       },
       setClockZone(){
 
@@ -265,7 +264,8 @@ export default {
           axios.get(process.env.BASE_URL + "data/zones.json")
           .then((response) => {
             this.zones = {...response.data.zones};
-            setTimeout(() => this.setClockTime(), 2000);
+            //timeout to simulate fetching
+            setTimeout(() => this.setClockTime(), 500);
           })
           .catch(error => {
             this.zones = {};
